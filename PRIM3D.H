@@ -35,23 +35,37 @@ public:
 	vec3d _normal;
 };
 
+class matrix3x4 {
+public:
+	float m_data[4][3];	
+}
+
+vec3d operator *(const vec3d& v, const matrix3x4 &m);
+vec3d operator *(const matrix3x4 &m, const vec3d &v);
+matrix3x4 operator *(const matrix3x4 &m1, const matrix3x4 &m2);
+
 class mesh3d {
 private:
-	vector<vertex> m_data;
+	vertex *m_pData;
 
 public:
-	void Add(const vertex& v);
-	void Add(float x, float y, float z);
-	void Add(float vX, float vY, float vZ, float nX, float nY, float nZ);
+	mesh3d(vector *m_pData);
+	~mesh3d();
+	
+	vertex const * const Get() const;
+	mesh3d Clone() const;
+	void Transform(const matrix3x4 &m);
 };
 
 class mesh_n3d {
 private:
-	vector<vertex_N> m_data;
+	vertex_N *m_pData;
 	
 public:
-	void Add(const vertex_N& v);
-	void Add(const vertex& v);
-	void Add(float x, float y, float z);
-	void Add(float vX, float vY, float vZ, float nX, float nY, float nZ);
+	mesh_n3d(vertex_N *pData);
+	~mesh_n3d();
+	
+	vertex_N const * const Get() const;
+	mesh_n3d Clone() const;
+	void Transform(const matrix_n3d);
 };
