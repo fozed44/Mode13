@@ -1,17 +1,21 @@
 
+
+#ifndef __PRIM3D__
+#define __PRIM3D__
+
 class vec3d {
 public:
 	float x;
 	float y;
 	float z;
 
-	void operator +=(const vec3d& a);
-	void operator -=(const vec3d& a);
+	// void operator +=(const vec3d& a);
+	// void operator -=(const vec3d& a);
 
-	float dot(const vec3d& a);
-	float cross(const vec3d& a);
+	// float dot(const vec3d& a);
+	// float cross(const vec3d& a);
 
-	static float cross(const vec3d& a, const vec3d& b);
+	// static float cross(const vec3d& a, const vec3d& b);
 
 };
 
@@ -32,7 +36,7 @@ public:
 	float y;
 	float z;
 	
-	vec3d _normal;
+	vec3d m_normal;
 };
 
 class matrix3x4 {
@@ -49,7 +53,7 @@ private:
 	vertex *m_pData;
 
 public:
-	mesh3d(vector *m_pData);
+	mesh3d(vertex *m_pData);
 	~mesh3d();
 	
 	vertex const * const Get() const;
@@ -67,5 +71,7 @@ public:
 	
 	vertex_N const * const Get() const;
 	mesh_n3d Clone() const;
-	void Transform(const matrix_n3d);
+	void Transform(const matrix3x4);
 };
+
+#endif

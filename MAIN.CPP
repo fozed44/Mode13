@@ -1,9 +1,21 @@
+
 #include "conio.h"
 #include "graphics.h"
 #include "stdlib.h"
 #include "stdio.h"
 #include <iostream.h>
 #include "PRIM2D.H"
+
+#define VEC_RAND_MIN_X 100
+#define VEC_RAND_MAX_X 400
+
+#define VEC_RAND_MIN_Y 100
+#define VEC_RAND_MAX_Y 400
+
+#define MIN_VELOCITY 0.001
+#define MAX_VELOCITY 0.005
+
+#define VEC_COLOR 20
 
 void PutRandPixel(IRenderTarget2D *pRt) {
 	float width = pRt->GetTargetWidth();
@@ -32,14 +44,87 @@ void RandClear(IRenderTarget2D *pRt) {
 	}
 }
 
+void RandomizeVectors(vec2d *pVecs, int count) {
+	for(int x = 0; x < count; x++) {
+		pVecs[x].x = VEC_RAND_MIN_X + rand() % (int)(VEC_RAND_MAX_X - VEC_RAND_MIN_X);
+		pVecs[x].y = VEC_RAND_MIN_Y + rand() % (int)(VEC_RAND_MAX_Y - VEC_RAND_MIN_Y);
+	}
+}
+
+void RandomizeVelocity(vec2d *pVol, int count) {
+	for(int x = 0; x < count; x++) {
+		pVol[x].x = MIN_VELOCITY + ((float)rand() / (float)(RAND_MAX)) * (MAX_VELOCITY - MIN_VELOCITY);
+		pVol[x].y = MIN_VELOCITY + ((float)rand() / (float)(RAND_MAX)) * (MAX_VELOCITY - MIN_VELOCITY);
+	}
+}
+
+vec2d calcCenter(vec2d *pVecs, int count)
+{
+	vec2d r;
+
+	r.x = 0;
+	r.y = 0;
+
+	for(int x = 0; x < count; x++)
+	{
+		r += pVecs[x];
+	}
+
+	r.x /= (float)count;
+	r.y /= (float)count;
+
+	return r;
+}
+
+void UpdateVel(vec2d *pVecs, vec2d *pCenter, int count){
+	float w = 0.01;
+	for(int x = 0; x < count; x++){
+		vec2d d = *pCenter - pVecs[x];
+		float length = d.Length();
+		float ls = (length*length);
+		ls = ls < 10000 ? 10000 : ls;
+		d.Normalize();
+		pVecs[x] += ( d * (1000/(ls)));
+	}
+}
+
+void UpdateVectors(vec2d *pVecs, vec2d *pVels, int count){
+	vec2d center = calcCenter(pVecs, count);
+	UpdateVel(pVecs, &center, count);
+	for(int x = 0; x < count; x++)
+	{
+		pVecs[x] += pVels[x];
+	}
+}
+
+void RenderVectors(vec2d *pVecs, vec2d *pVels, int count, IRenderTarget2D *pRt, Mode13Graphics *g) {
+	while(!kbhit()){
+		g->WaitForVSync();
+		g->ClearScreen(0);
+		UpdateVectors(pVecs, pVels, count);
+		for(int x = 0; x < count; ++x)
+			pRt->Put(pVecs[x], VEC_COLOR);
+
+
+	}
+}
+
 void main() {
+
+	int vecCount = 100;
+	vec2d *pVecs = new vec2d[vecCount];
+	vec2d *pVels = new vec2d[vecCount];
+
+	RandomizeVectors(pVecs, vecCount);
+	RandomizeVelocity(pVels, vecCount);
+
 
 	Mode13Graphics g;
 	IRenderTarget2D *pRt = (IRenderTarget2D*)new RenderTarget2D((IGraphicsDevice*)&g, 500, 500);
 
 	g.SetGraphicsMode();
 
-	PutRandPixel(pRt);
+	RenderVectors(pVecs, pVels, vecCount, pRt,&g);
 
 	getch();
 

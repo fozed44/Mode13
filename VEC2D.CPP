@@ -23,6 +23,26 @@ vec2d operator -(const vec2d &a, const vec2d &b)
     return result;
 }
 
+vec2d operator *(const vec2d &a, float s)
+{
+    vec2d result;
+
+    result.x = a.x * s;
+    result.y = a.y * s;
+
+    return result;
+}
+
+vec2d operator /(const vec2d &a, float s)
+{
+    vec2d result;
+
+    result.x = a.x * s;
+    result.y = a.y * s;
+
+    return result;
+}
+
 float operator *(const vec2d &a, const vec2d &b)
 {
     return a.x*b.x+a.y*b.y;

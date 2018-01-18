@@ -3,7 +3,7 @@
 #define __INTERFACES__
 
 #include "PRIM2D.H"
-#include "PRIM3D.H"
+//#include "PRIM3D.H"
 
 class IGraphicsDevice {
 public:
@@ -29,12 +29,12 @@ public:
 	//virtual void PutFilledRect(const vec2d& a, const vec2d& b, unsigned char color) = 0;
 };
 
-class IRenderTarget3D {
-	virtual ~IRenderTarget3D(){}
+// class IRenderTarget3D {
+// 	virtual ~IRenderTarget3D(){}
 
-	virtual void Render(const vertex& v) = 0;
-	virtual void Render(const mesh& v) = 0;
-};
+// 	virtual void Render(const vertex& v) = 0;
+// 	virtual void Render(const mesh& v) = 0;
+// };
 
 class IDrawable {
 public:

@@ -17,7 +17,10 @@ public:
 
 vec2d operator +(const vec2d &a, const vec2d &b);
 vec2d operator -(const vec2d &a, const vec2d &b);
+vec2d operator *(const vec2d &a, float s);
+vec2d operator /(const vec2d &a, float s);
 float operator *(const vec2d &a, const vec2d &b);
+
 
 /*
 class matrix3x3 {
