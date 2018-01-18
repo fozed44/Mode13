@@ -12,9 +12,9 @@
 #define VEC_RAND_MIN_Y 100
 #define VEC_RAND_MAX_Y 400
 
-#define MIN_VELOCITY 0.001
-#define MAX_VELOCITY 0.005
-
+#define MIN_VELOCITY 0.0000001
+#define MAX_VELOCITY 0.0000005
+			     
 #define VEC_COLOR 20
 
 void PutRandPixel(IRenderTarget2D *pRt) {
@@ -52,9 +52,12 @@ void RandomizeVectors(vec2d *pVecs, int count) {
 }
 
 void RandomizeVelocity(vec2d *pVol, int count) {
+	
 	for(int x = 0; x < count; x++) {
-		pVol[x].x = MIN_VELOCITY + ((float)rand() / (float)(RAND_MAX)) * (MAX_VELOCITY - MIN_VELOCITY);
-		pVol[x].y = MIN_VELOCITY + ((float)rand() / (float)(RAND_MAX)) * (MAX_VELOCITY - MIN_VELOCITY);
+		//pVol[x].x = MIN_VELOCITY + ((float)rand() / (float)(RAND_MAX)) * (MAX_VELOCITY - MIN_VELOCITY);
+		//pVol[x].y = MIN_VELOCITY + ((float)rand() / (float)(RAND_MAX)) * (MAX_VELOCITY - MIN_VELOCITY);
+		pVol[x].x = 0.0;
+		pVol[x].y = 0.0;
 	}
 }
 
@@ -81,16 +84,17 @@ void UpdateVel(vec2d *pVecs, vec2d *pCenter, int count){
 	for(int x = 0; x < count; x++){
 		vec2d d = *pCenter - pVecs[x];
 		float length = d.Length();
+		if(length < 1.0) continue;
 		float ls = (length*length);
-		ls = ls < 10000 ? 10000 : ls;
+		ls = ls < 1 ? 1 : ls;
 		d.Normalize();
-		pVecs[x] += ( d * (1000/(ls)));
+		pVecs[x] += ( d * (10/(ls)));
 	}
 }
 
 void UpdateVectors(vec2d *pVecs, vec2d *pVels, int count){
 	vec2d center = calcCenter(pVecs, count);
-	UpdateVel(pVecs, &center, count);
+	UpdateVel(pVels, &center, count);
 	for(int x = 0; x < count; x++)
 	{
 		pVecs[x] += pVels[x];
@@ -99,8 +103,9 @@ void UpdateVectors(vec2d *pVecs, vec2d *pVels, int count){
 
 void RenderVectors(vec2d *pVecs, vec2d *pVels, int count, IRenderTarget2D *pRt, Mode13Graphics *g) {
 	while(!kbhit()){
-		g->WaitForVSync();
-		g->ClearScreen(0);
+		//g->WaitForVSync();
+		g->Flip(1);
+		 g->ClearScreen(0);
 		UpdateVectors(pVecs, pVels, count);
 		for(int x = 0; x < count; ++x)
 			pRt->Put(pVecs[x], VEC_COLOR);
@@ -131,7 +136,7 @@ void main() {
 	RandClear(pRt);
 
 	g.SetTextMode();
-	
+
 	delete pRt;
 }
 /*
@@ -230,7 +235,7 @@ void LineTest(Mode13Graphics& g)
 }
 
 int main(){
-	
+
 	cout << "testing";
 
 	return 0;

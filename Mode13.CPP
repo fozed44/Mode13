@@ -8,6 +8,16 @@
 #include <assert.h>
 #endif
 
+Mode13Graphics::Mode13Graphics() {
+	m_pBuffer = 0;
+	m_pBuffer = new unsigned char[64000];
+}
+
+Mode13Graphics::~Mode13Graphics(){
+	if(m_pBuffer)
+		delete m_pBuffer;
+}
+
 int Mode13Graphics::GetDeviceWidth() const
 {
 	return 319;
@@ -52,7 +62,8 @@ void Mode13Graphics::PutPixel(int x, int y, unsigned char color)
 	assert(y < 200);
 	#endif
 
-	asm {
+	m_pBuffer[y*200+x] = color;
+	/*asm {
 		mov di, 0xA000
 		mov es, di
 		mov ax, 320
@@ -61,7 +72,7 @@ void Mode13Graphics::PutPixel(int x, int y, unsigned char color)
 		add di, [x]
 		mov al, [color]
 		stosb
-	}
+	}*/
 }
 
 void Mode13Graphics::PutLine(int x1, int y1, int x2, int y2, unsigned char color) 
@@ -124,7 +135,7 @@ void Mode13Graphics::PutFilledRect(int x1, int y1, int width, int height, unsign
 
 void Mode13Graphics::ClearScreen(unsigned char color) 
 {
-	asm {
+	/*asm {
 		mov al, [color]
 		mov di, 0xA000
 		mov es, di
@@ -132,5 +143,19 @@ void Mode13Graphics::ClearScreen(unsigned char color)
 		cld
 		mov cx, 0xFA00
 		rep stosb
-	}
+	}*/
+	for(unsigned int x = 0; x < 64000; x++)
+		m_pBuffer[x] = color;
+}
+
+void Mode13Graphics::Flip(int vSinc){
+	if(vSinc)
+		WaitForVSync();
+	
+	unsigned int t = 0xa0000000;
+	unsigned char *pBuff = (unsigned char *)(t);
+	unsigned char *pSource = m_pBuffer;
+
+	for(unsigned int x = 0; x < 64000; x++)
+		*pBuff++ = *pSource++;
 }

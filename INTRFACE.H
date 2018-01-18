@@ -13,6 +13,7 @@ public:
 	virtual void PutLine(int x1, int y1, int x2, int y2, unsigned char color) = 0;
 	virtual void PutRect(int x1, int y1, int width, int height, unsigned char color) = 0;
 	virtual void PutFilledRect(int x1, int y1, int width, int height, unsigned char color) = 0;
+	virtual void Flip(int vSinc) = 0;
 	virtual ~IGraphicsDevice(){}
 };
 

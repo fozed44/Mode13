@@ -6,7 +6,8 @@
 
 class Mode13Graphics  : IGraphicsDevice {
 public:
-	virtual ~Mode13Graphics(){}
+	Mode13Graphics();
+	virtual ~Mode13Graphics();
 
 	void SetGraphicsMode() const;
 	void SetTextMode() const;
@@ -19,11 +20,14 @@ public:
 	virtual void PutLine(int x1, int y1, int x2, int y2, unsigned char color) ;
 	virtual void PutRect(int x1, int y1, int width, int height, unsigned char color);
 	virtual void PutFilledRect(int x1, int y1, int width, int height, unsigned char color);
-	
+
+	virtual void Flip(int vSinc);
 
 	virtual void ClearScreen(unsigned char color);
 
 //	virtual void SetPalletteColor(unsigned char r, unsigned char g, unsigned char b, unsigned char index) const;
+private:
+	unsigned char *m_pBuffer;
 };
 
 class RenderTarget2D : IRenderTarget2D {
